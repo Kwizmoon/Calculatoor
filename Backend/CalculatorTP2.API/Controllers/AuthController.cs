@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CalculatorTP2.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : Controller
+    [Route("[controller]")]
+    public class AuthController : ControllerBase
     {
         private readonly AppDbContext _db;
 
@@ -16,25 +16,39 @@ namespace CalculatorTP2.API.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] User user)
+        public IActionResult Register([FromBody] RegisterRequest request)
         {
-            if (_db.Users.Any(u => u.Username == user.Username))
+            if (_db.Users.Any(u => u.Username == request.Username))
             {
                 return BadRequest("Username already exists.");
             }
-            _db.Users.Add(user);
+
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            // 2. Mapping: Create a clean User object from the Request
+            var newUser = new User
+            {
+                Username = request.Username,
+                Password = hashedPassword //  hash this!
+            };
+            _db.Users.Add(newUser);
             _db.SaveChanges();
-            return Ok("User registered successfully.");
+            return Ok(new { message = "User registered successfully." });
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] User user)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
-            var existingUser = _db.Users.FirstOrDefault(u => u.Username == user.Username && u.Password == user.Password);
-            if (existingUser == null)
+            // 1. Find the user by Username only
+            var user = _db.Users.FirstOrDefault(u => u.Username == request.Username);
+
+            // 2. Check if user exists AND if the password matches the hash
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
-                return Unauthorized("Invalid username or password.");
+                return Unauthorized(new { message = "Invalid username or password." });
             }
+
             return Ok(new { userId = user.Id, username = user.Username });
         }
+    }
 }

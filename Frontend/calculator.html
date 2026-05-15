@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculatrice</title>
+  
+  <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <nav>
+        <button id="theme-toggle"><img src="moon.png" alt="theme"></button>
+    </nav>
+<div class="container">
+  <h1>Calculatrice</h1>
+
+  <div class="display">
+    <div id="expression"></div>
+    <div class="result-row">
+      <span id="res"></span>
+      <span id="status"></span>
+    </div>
+  </div>
+
+  <!-- Digits + basic ops -->
+  <div class="btn-row">
+    <button class="btn-clear" onclick="clearAll()">C</button>
+    <button class="btn-back" onclick="backspace()">⌫</button>
+  </div>
+
+  <div class="btn-grid">
+
+    <button onclick="append('7')">7</button>
+    <button onclick="append('8')">8</button>
+    <button onclick="append('9')">9</button>
+    <button class="btn-op" onclick="append('*')">×</button>
+
+    <button onclick="append('4')">4</button>
+    <button onclick="append('5')">5</button>
+    <button onclick="append('6')">6</button>
+    <button class="btn-op" onclick="append('-')">−</button>
+
+    <button onclick="append('1')">1</button>
+    <button onclick="append('2')">2</button>
+    <button onclick="append('3')">3</button>
+    <button class="btn-op" onclick="append('+')">+</button>
+
+    <button onclick="append('0')">0</button>
+    <button onclick="append('.')">.</button>  
+    <button class="btn-par" onclick="append('(')">(</button>
+    <button class="btn-par" onclick="append(')')">)</button> 
+    <button class="btn-op" onclick="append('/')">÷</button>
+    
+  </div>
+
+ <div class="btn-grid">
+    <button class="btn-fn" onclick="applySquare()">x²</button>
+    <button class="btn-fn" onclick="applyExpN()">xⁿ</button>
+    <button class="btn-fn" onclick="applySqrt()">√x</button>
+    <button class="btn-eq" onclick="faireCalcul()">=</button>
+ </div>
+
+  <!-- History -->
+  <div class="hist-section">
+    <div class="hist-header">Historique</div>
+    <ul id="liste-historique"></ul>
+  </div>
+</div>
+
+<script src="calculator.html"></script>
+</body>
+</html>

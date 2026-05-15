@@ -4,25 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS
+// 1. CORS - communicate with frontend
 builder.Services.AddCors();
 
 builder.Services.AddControllers();
+
+// 2. DATABASE CONFIGURATION
+// This looks for "DefaultConnection" in appsettings.json or Azure environment variables
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Force PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("CalculatorDatabase"));
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<Calculator>();
 
-// SWAGGER SERVICES 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Enable Swagger for Azure (important!)
+// Swagger  for testing Login endpoints
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 
 app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 

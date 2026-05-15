@@ -27,11 +27,13 @@ namespace CalculatorTP2.API.Controllers
             {
                 var resultat = _calculator.EvaluerExpression(request.Expression);
 
+                // Link the calculation to the user who performed it
                 _db.CalculationLogs.Add(new CalculationLog
                 {
                     Expression = request.Expression,
                     Result = resultat.ToString(),
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = request.UserId // CRITICAL: Link to the User table
                 });
                 _db.SaveChanges();
 
@@ -41,7 +43,7 @@ namespace CalculatorTP2.API.Controllers
             {
                 return Ok(new { res = "Error: Division by zero" });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Ok(new { res = "Invalid Expression" });
             }
@@ -57,20 +59,16 @@ namespace CalculatorTP2.API.Controllers
         }
 
         // Endpoint pour supprimer un calcul de l'historique par son Id
-        [HttpDelete("historique/{id}")]
-        public IActionResult DeleteLog(int id)
+        [HttpGet("historique/{userId}")]
+        public IActionResult GetHistorique(int userId)
         {
-            var log = _db.CalculationLogs.Find(id);
+            // Only return logs belonging to this specific user
+            var logs = _db.CalculationLogs
+                .Where(l => l.UserId == userId)
+                .OrderByDescending(l => l.Id)
+                .ToList();
 
-            if (log == null)
-            {
-                return NotFound(new { message = "Calcul non trouvé" });
-            }
-
-            _db.CalculationLogs.Remove(log);
-            _db.SaveChanges();
-
-            return Ok(new { message = $"Le calcul avec l'Id {id} a été supprimé." });
+            return Ok(logs);
         }
     }
 }
