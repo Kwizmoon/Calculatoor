@@ -85,7 +85,7 @@ async function faireCalcul() {
         const response = await fetch(`${API_URL}/calculer`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Expression: expr })
+            body: JSON.stringify({ Expression: expr, UserId: currentUserId})
         });
 
         const text = await response.text();
