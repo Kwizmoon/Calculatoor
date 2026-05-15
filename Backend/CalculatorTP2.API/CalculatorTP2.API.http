@@ -1,0 +1,6 @@
+@CalculatorTP2.API_HostAddress = http://localhost:5298
+
+GET {{CalculatorTP2.API_HostAddress}}/Calculator/
+Accept: application/json
+
+###
