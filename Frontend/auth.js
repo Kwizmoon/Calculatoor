@@ -62,7 +62,7 @@ document.querySelector("#login-form").addEventListener("submit", async(e) =>{
         const data = await response.json();
 
         localStorage.setItem('currentUserId', data.userId);
-        localStorage.setItem('curentUsername', data.username);
+        localStorage.setItem('currentUsername', data.username);
 
         window.location.href = "calculator.html";
         

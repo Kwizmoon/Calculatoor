@@ -15,6 +15,11 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
+const currentUserId = localStorage.getItem('currentUserId');
+const currentUsername = localStorage.getItem('currentUsername');
+
+document.querySelector("#titre").textContent += ` - ${currentUsername}(${currentUserId})`
+
 let expr = "";
 
 function refresh() {
