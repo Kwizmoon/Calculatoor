@@ -11,13 +11,33 @@
 [data-theme="dark"] #theme-toggle img {
     filter: brightness(0) invert(1);
 }
+
 nav {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 0;
+    left: 0;
+    width: 100%; 
     z-index: 1000;
-    
+    display: flex;
+    justify-content: space-between; 
+    padding: 16px 24px;
+    padding-left: 100px;
+    padding-right: 100px; 
+    box-sizing: border-box;
+    background-color: var(--bg); 
+    border-bottom: 1px solid var(--border);
+    height: 90px;
 }
+
+.logo {
+    height: 200px;
+    width: auto;
+    transform: translateY(-70px) translateX(-20px);
+    align-items: center;
+
+}
+
+
 :root {
     --bg: #F5F7FC;
     --surface: #FFFFFF;
@@ -75,9 +95,55 @@ body {
     padding: 2rem 1rem;
 }
 
+
+
 .container {
+    padding-top: 90px;
     width: 100%;
     max-width: 380px;
+}
+
+/* AUTHENTIFICATION  */
+.auth-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;              
+    max-width: 300px;       
+    margin: 0 auto;
+}
+
+.auth-container input {
+    background: var(--surface2);
+    border: var(--border);
+    width: 100%;            
+    padding: 10px;
+    margin-top: 15px;
+    box-sizing: border-box; 
+}
+
+.auth-container button {
+    width: 100%;
+    margin-top: 40px;
+    padding: 14px 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: background 0.1s, transform 0.08s, border-color 0.1s;
+    line-height: 1;
+    height: 48px;
+}
+
+.auth-p {
+    font-size: smaller;
+    margin-top: 10px;
 }
 
 h1 {
@@ -89,6 +155,9 @@ h1 {
     text-transform: uppercase;
     margin-bottom: 1.25rem;
 }
+
+
+
 
 /* Display */
 .display {

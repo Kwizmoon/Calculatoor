@@ -1,5 +1,22 @@
 const API_URL = "https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/auth";
+
+
+// THEME TOGGLE
+const toggleBtn = document.getElementById("theme-toggle");
+const icon = toggleBtn.querySelector("img");
                         
+toggleBtn.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+
+    if (currentTheme === "dark") {
+        document.documentElement.removeAttribute("data-theme");
+        icon.src = "moon.png";
+    } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+        icon.src = "sun-icon-30.png";
+    }
+});
+
 
 // toggle between login and register page
 function toggleAuth() {
