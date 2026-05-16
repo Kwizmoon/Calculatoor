@@ -1,4 +1,4 @@
-const API_URL = "http://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/calculator";
+const API_URL = "https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/calculator";
 
 const toggleBtn = document.getElementById("theme-toggle");
 const icon = toggleBtn.querySelector("img");
