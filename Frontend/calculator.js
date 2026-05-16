@@ -70,6 +70,16 @@ async function faireCalcul() {
     const statusEl = document.getElementById("status");
     const resEl = document.getElementById("res");
 
+    // Grab the logged-in User ID from localStorage
+    const currentUserId = localStorage.getItem('currentUserId');
+
+    // Optional Safety Check: If they aren't logged in, don't let them calculate
+    if (!currentUserId) {
+        resEl.innerText = "Error: Please log in first";
+        resEl.classList.add("error-text");
+        return;
+    }
+
     resEl.classList.remove("error-text");
     resEl.innerText = "";
 
@@ -90,7 +100,7 @@ async function faireCalcul() {
 
         const text = await response.text();
         const data = JSON.parse(text);
-        finalResult = data.res ?? data.result ?? data;
+        const finalResult = data.res ?? data.result ?? data;
         resEl.innerHTML = finalResult;
 
         if (typeof finalResult === "string" && (finalResult.includes("Error") || finalResult.includes("Invalid"))) {
@@ -126,10 +136,18 @@ async function supprimerLog(id) {
 }
 
 async function chargerHistorique() {
+    // Grab the ID from storage
+    const currentUserId = localStorage.getItem('currentUserId');
+    const liste = document.getElementById("liste-historique"); 
+
+    if (!currentUserId) {
+        liste.innerHTML = "<li><span>Veuillez vous connecter pour voir l'historique.</span></li>";
+        return;
+    }
+    
     try {
-        const response = await fetch(`${API_URL}/historique`);
+        const response = await fetch(`${API_URL}/historique/user/${currentUserId}`)
         const logs = await response.json();
-        const liste = document.getElementById("liste-historique");
         liste.innerHTML = "";
 
         logs.forEach(log => {
