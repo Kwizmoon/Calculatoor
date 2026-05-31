@@ -3,17 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculatrice</title>
-  
+  <title>Calculator</title>
   <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
-    <nav>
-      <img class="logo" src="calculatoor-logo.png" alt="Calculatoor Logo">
-      <button id="theme-toggle"><img src="moon.png" alt="theme"></button>  
-    </nav>
-  <div class="container">
+
+ <nav class="top-nav">
+  <img class="logo" src="calculatoor-logo.png" alt="Calculatoor Logo">
+
+  <div class="nav-center">
+    <a class="nav-link" href="#" onclick="showCalculator()">Calculatrice</a>
+    <a class="nav-link" href="#" onclick="showLeaderboard()">Classement</a>
+  </div>
+
+  <div class="nav-right">
+    <a class="nav-link" id="btn-connexion" href="#" onclick="connexion()">Connexion</a>
+    <a class="nav-link nav-link--danger" id="btn-deconnexion" href="#" onclick="deconnexion()">Déconnexion</a>
+    <button id="theme-toggle"><img src="moon.png" alt="theme"></button>
+  </div>
+</nav>
+
+
+  <div id="calculator-view" class="container">
     <h1 id="titre">Calculatrice</h1>
 
     <div class="display">
@@ -24,14 +35,12 @@
       </div>
     </div>
 
-    <!-- Digits + basic ops -->
     <div class="btn-row">
       <button class="btn-clear" onclick="clearAll()">C</button>
       <button class="btn-back" onclick="backspace()">⌫</button>
     </div>
 
     <div class="btn-grid">
-
       <button onclick="append('7')">7</button>
       <button onclick="append('8')">8</button>
       <button onclick="append('9')">9</button>
@@ -52,20 +61,48 @@
       <button class="btn-par" onclick="append('(')">(</button>
       <button class="btn-par" onclick="append(')')">)</button> 
       <button class="btn-op" onclick="append('/')">÷</button>
-      
     </div>
 
-  <div class="btn-grid">
-      <button class="btn-fn" onclick="applySquare()">x²</button>
-      <button class="btn-fn" onclick="applyExpN()">xⁿ</button>
-      <button class="btn-fn" onclick="applySqrt()">√x</button>
-      <button class="btn-eq" onclick="faireCalcul()">=</button>
-  </div>
+    <div class="btn-grid">
+        <button class="btn-fn" onclick="applySquare()">x²</button>
+        <button class="btn-fn" onclick="applyExpN()">xⁿ</button>
+        <button class="btn-fn" onclick="applySqrt()">√x</button>
+        <button class="btn-eq" onclick="faireCalcul()">=</button>
+    </div>
 
-    <!-- History -->
     <div class="hist-section">
       <div class="hist-header">Historique</div>
       <ul id="liste-historique"></ul>
+    </div>
+  </div>
+
+
+  <div id="leaderboard-view" class="container" style="display: none;">
+    <h1 id="titre-leaderboard">🏆 Classement</h1>
+    <p class="leaderboard-subtitle">Top 10 des utilisateurs les plus actifs</p>
+
+    <div class="lb-filters">
+      <button class="lb-filter active" onclick="setTimespan('alltime', this)">Tout</button>
+      <button class="lb-filter" onclick="setTimespan('weekly', this)">Cette semaine</button>
+    </div>
+
+    <div class="leaderboard-section">
+      <div class="leaderboard-header">
+        <span>Rang</span>
+        <span>Utilisateur</span>
+        <span>Calculs</span>
+      </div>
+      <ul id="liste-leaderboard"></ul>
+    </div>
+
+    <div class="lb-pagination">
+      <button class="lb-page-btn" id="lb-prev" onclick="changePage(-1)">← Précédent</button>
+      <span id="lb-page-indicator">Page 1</span>
+      <button class="lb-page-btn" id="lb-next" onclick="changePage(1)">Suivant →</button>
+    </div>
+
+    <div id="user-rank-card" class="user-rank-card" style="display:none;">
+      <span id="user-rank-text"></span>
     </div>
   </div>
 

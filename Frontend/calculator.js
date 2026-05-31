@@ -1,24 +1,143 @@
 const API_URL = "https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/calculator";
 
+// ── Theme toggle ──
 const toggleBtn = document.getElementById("theme-toggle");
-const icon = toggleBtn.querySelector("img");
+const icon = toggleBtn ? toggleBtn.querySelector("img") : null;
 
-toggleBtn.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-
-    if (currentTheme === "dark") {
-        document.documentElement.removeAttribute("data-theme");
-        icon.src = "moon.png";
-    } else {
+function applyTheme(theme) {
+    if (theme === "dark") {
         document.documentElement.setAttribute("data-theme", "dark");
-        icon.src = "sun-icon-30.png";
+        if (icon) icon.src = "sun-icon-30.png";
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+        if (icon) icon.src = "moon.png";
     }
-});
+    localStorage.setItem("theme", theme);
+}
 
+// Restore saved theme on load
+applyTheme(localStorage.getItem("theme") || "light");
+
+if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        applyTheme(isDark ? "light" : "dark");
+    });
+}
+
+// ── User info ──
 const currentUserId = localStorage.getItem('currentUserId');
 const currentUsername = localStorage.getItem('currentUsername');
 
-document.querySelector("#titre").textContent += ` - ${currentUsername}(${currentUserId})`
+// Show in calculator title
+const titreEl = document.getElementById("titre");
+if (titreEl && currentUsername) {
+    titreEl.textContent += ` — ${currentUsername}`;
+}
+
+// Show/hide connexion & déconnexion based on auth state
+function updateAuthNav() {
+    const loggedIn = !!localStorage.getItem('currentUserId');
+    document.getElementById('btn-connexion').style.display = loggedIn ? 'none' : '';
+    document.getElementById('btn-deconnexion').style.display = loggedIn ? '' : 'none';
+}
+updateAuthNav();
+
+// ── Navigation ──
+function showCalculator() {
+    document.getElementById("calculator-view").style.display = "";
+    document.getElementById("leaderboard-view").style.display = "none";
+}
+
+function showLeaderboard() {
+    document.getElementById("calculator-view").style.display = "none";
+    document.getElementById("leaderboard-view").style.display = "";
+    chargerClassement();
+}
+
+function deconnexion() {
+    localStorage.removeItem("currentUserId");
+    localStorage.removeItem("currentUsername");
+    window.location.reload();
+}
+
+function connexion() {
+    // Redirect to login page or show login UI — adjust to your auth flow
+    window.location.href = "index.html";
+}
+
+// ── Leaderboard ──
+let lbPage = 1;
+let lbTimespan = "alltime";
+const LB_LIMIT = 10;
+
+function setTimespan(timespan, btn) {
+    lbTimespan = timespan;
+    lbPage = 1;
+    document.querySelectorAll(".lb-filter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    chargerClassement();
+}
+
+function changePage(delta) {
+    lbPage = Math.max(1, lbPage + delta);
+    chargerClassement();
+}
+
+async function chargerClassement() {
+    const list = document.getElementById("liste-leaderboard");
+    const prevBtn = document.getElementById("lb-prev");
+    const nextBtn = document.getElementById("lb-next");
+    const pageIndicator = document.getElementById("lb-page-indicator");
+
+    list.innerHTML = `<li class="lb-loading">Chargement…</li>`;
+
+    try {
+        const res = await fetch(`${API_URL.replace('/calculator', '')}/api/leaderboard?limit=${LB_LIMIT}&page=${lbPage}&timespan=${lbTimespan}`);
+        const data = await res.json();
+
+        const medals = ["🥇", "🥈", "🥉"];
+        const offset = (lbPage - 1) * LB_LIMIT;
+
+        if (!data.length) {
+            list.innerHTML = `<li class="lb-empty">Aucun résultat</li>`;
+        } else {
+            list.innerHTML = data.map((entry, i) => {
+                const rank = offset + i + 1;
+                const medalOrRank = medals[rank - 1] ?? `#${rank}`;
+                const isCurrentUser = entry.userId === parseInt(localStorage.getItem('currentUserId'));
+                return `<li class="${isCurrentUser ? 'lb-current-user' : ''}">
+                    <span class="lb-rank ${rank <= 3 ? 'top' + rank : ''}">${medalOrRank}</span>
+                    <span class="lb-name">${entry.username}${isCurrentUser ? ' <span class="lb-you">(vous)</span>' : ''}</span>
+                    <span class="lb-count">${entry.expressionCount} calc.</span>
+                </li>`;
+            }).join("");
+        }
+
+        // Pagination controls
+        prevBtn.disabled = lbPage === 1;
+        nextBtn.disabled = data.length < LB_LIMIT;
+        pageIndicator.textContent = `Page ${lbPage}`;
+
+    } catch {
+        list.innerHTML = `<li class="lb-empty">Classement non disponible</li>`;
+    }
+
+    // Load current user's rank
+    const userId = localStorage.getItem('currentUserId');
+    if (userId) {
+        try {
+            const rankRes = await fetch(`${API_URL.replace('/calculator', '')}/api/leaderboard/user/${userId}`);
+            if (rankRes.ok) {
+                const rankData = await rankRes.json();
+                const card = document.getElementById("user-rank-card");
+                document.getElementById("user-rank-text").textContent =
+                    `Votre rang : #${rankData.rank} — ${rankData.totalExpressions} calcul${rankData.totalExpressions !== 1 ? 's' : ''}`;
+                card.style.display = "";
+            }
+        } catch { /* silently skip */ }
+    }
+}
 
 let expr = "";
 
