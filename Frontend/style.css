@@ -145,10 +145,6 @@ nav {
     #res {
         font-size: 22px !important;
     }
-
-    #liste-historique {
-        max-height: 110px !important; /* Réduit légèrement la liste pour tout voir sur l'écran */
-    }
 }
 
 
