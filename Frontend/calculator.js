@@ -270,7 +270,7 @@ async function chargerHistorique() {
     }
     
     try {
-        const response = await fetch(`${API_URL}/historique/user/${currentUserId}`)
+        const response = await fetch(`${API_URL}/historique/${currentUserId}`)
         const logs = await response.json();
         liste.innerHTML = "";
 
