@@ -94,13 +94,14 @@ nav {
     }
 
     .logo {
-        height: 35px; /* On réduit légèrement le logo sur mobile */
+        height: 70px; /* On réduit légèrement le logo sur mobile */
     }
 
     .nav-center, .nav-right {
         width: 100%;
         justify-content: center; /* Centre les menus sur l'écran du téléphone */
         gap: 4px;
+        height: 35px;
     }
 
     .nav-link {
