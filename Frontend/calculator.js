@@ -264,9 +264,7 @@ async function supprimerLog(id) {
         chargerHistorique();
     }
 }
-
 async function chargerHistorique() {
-    // Grab the ID from storage
     const currentUserId = localStorage.getItem('currentUserId');
     const liste = document.getElementById("liste-historique"); 
 
@@ -276,25 +274,31 @@ async function chargerHistorique() {
     }
     
     try {
+        // Using the updated endpoint routing that fixed your 404 error
         const response = await fetch(`${API_URL}/historique/${currentUserId}`)
         const logs = await response.json();
         liste.innerHTML = "";
 
         logs.forEach(log => {
+            // SAFE CHECK: Fallback if your backend uses Capitalized "Id" vs lowercase "id"
+            const logId = log.id ?? log.Id;
+
             const li = document.createElement("li");
-            li.setAttribute("data-id", log.id);
+            li.setAttribute("data-id", logId); // Attaches the proper ID to the HTML element
 
             const left = document.createElement("span");
             left.innerHTML = `${log.expression} <span class="eq">= ${log.result}</span>`;
 
             const right = document.createElement("span");
             right.className = "date";
-            right.innerText = new Date(log.createdAt).toLocaleString();
+            right.innerText = new Date(log.createdAt ?? log.CreatedQty ?? Date.now()).toLocaleString();
 
             const deleteBtn = document.createElement("button");
             deleteBtn.innerText = "✕";
             deleteBtn.className = "btn-delete-log";
-            deleteBtn.onclick = () => supprimerLog(log.id);
+            
+            // Explicitly pass the correct fixed logId into the click event
+            deleteBtn.onclick = () => supprimerLog(logId);
 
             const rightGroup = document.createElement("div");
             rightGroup.className = "log-right";
@@ -305,8 +309,8 @@ async function chargerHistorique() {
             li.appendChild(rightGroup);
             liste.appendChild(li);
         });
-    } catch {
-        const liste = document.getElementById("liste-historique");
+    } catch (err) {
+        console.error("Error building history view:", err);
         liste.innerHTML = "<li><span>Historique non disponible</span></li>";
     }
 }
