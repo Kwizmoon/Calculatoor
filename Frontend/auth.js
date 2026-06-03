@@ -22,8 +22,14 @@ toggleBtn.addEventListener("click", () => {
 function toggleAuth() {
     const register = document.querySelector("#register-section");
     const login = document.querySelector("#login-section");
-    register.style.display = register.style.display === 'none' ? 'block' : 'none';
-    login.style.display = login.style.display === 'none' ? 'block' : 'none';
+    
+    if (register.style.display === "none") {
+        register.style.display = "block";
+        login.style.display = "none";
+    } else {
+        register.style.display = "none";
+        login.style.display = "block";
+    }
 }
 
 // Register
