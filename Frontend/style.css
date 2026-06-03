@@ -79,6 +79,41 @@ nav {
 .nav-link--danger { color: var(--danger); }
 .nav-link--danger:hover { background: var(--danger-bg); color: var(--danger); }
 
+
+@media (max-width: 480px) {
+    nav {
+        height: auto; /* Permet à la nav de s'agrandir verticalement si nécessaire */
+        padding: 10px 8px;
+        flex-direction: column; /* Aligne les blocs verticalement sur les très petits téléphones */
+        gap: 8px;
+    }
+
+    .nav-left {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .logo {
+        height: 35px; /* On réduit légèrement le logo sur mobile */
+    }
+
+    .nav-center, .nav-right {
+        width: 100%;
+        justify-content: center; /* Centre les menus sur l'écran du téléphone */
+        gap: 4px;
+    }
+
+    .nav-link {
+        font-size: 11px; /* Réduit la taille du texte pour éviter les retours à la ligne forcés */
+        padding: 6px 8px;
+    }
+    
+    body {
+        padding-top: 140px; /* Donne plus d'espace en haut puisque la nav sur mobile prend 2 à 3 lignes */
+    }
+}
+
+
 /* ── Theme toggle ── */
 #theme-toggle {
     background: none;
