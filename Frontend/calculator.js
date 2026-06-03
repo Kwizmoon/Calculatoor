@@ -240,18 +240,24 @@ async function faireCalcul() {
 }
 
 async function supprimerLog(id) {
-    // Remove from DOM immediately by data-id
+    console.log("Attempting to delete log from DOM with ID:", id);
+    
+    // Select the element from the DOM using the ID
     const li = document.querySelector(`[data-id="${id}"]`);
-    if (li) li.remove();
+    if (li) {
+        li.remove(); // Removes it from the screen immediately
+    } else {
+        console.warn(`Could not find DOM element with data-id="${id}"`);
+    }
 
     try {
-        const response = await fetch(`${API_URL}/historique/${id}`, {
+        const response = await fetch(`${API_URL.replace('/calculator', '')}/api/historique/${id}`, {
             method: "DELETE"
         });
 
         if (!response.ok) {
-            console.error("Erreur suppression:", response.status);
-            chargerHistorique();
+            console.error("Erreur suppression serveur:", response.status);
+            chargerHistorique(); // Reload if the server deletion failed to sync
         }
     } catch (error) {
         console.error("Erreur suppression:", error);
