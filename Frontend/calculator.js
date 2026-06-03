@@ -35,13 +35,21 @@ if (titreEl && currentUsername) {
     titreEl.textContent += ` — ${currentUsername}`;
 }
 
-// Show/hide connexion & déconnexion based on auth state
+// Show/hide connexion & deconnexion based on auth state
 function updateAuthNav() {
     const loggedIn = !!localStorage.getItem('currentUserId');
-    document.getElementById('btn-connexion').style.display = loggedIn ? 'none' : '';
-    document.getElementById('btn-deconnexion').style.display = loggedIn ? '' : 'none';
+    const btnConnexion = document.getElementById('btn-connexion');
+    const btnDeconnexion = document.getElementById('btn-deconnexion');
+    
+    if (btnConnexion) btnConnexion.style.display = loggedIn ? 'none' : '';
+    if (btnDeconnexion) btnDeconnexion.style.display = loggedIn ? '' : 'none';
 }
-updateAuthNav();
+
+// On attend que la page soit prête pour exécuter la logique de démarrage
+document.addEventListener("DOMContentLoaded", () => {
+    updateAuthNav();
+    chargerHistorique();
+});
 
 // ── Navigation ──
 function showCalculator() {
@@ -329,4 +337,4 @@ async function chargerHistorique() {
     }
 }
 
-window.onload = chargerHistorique;
+;
