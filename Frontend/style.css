@@ -83,38 +83,71 @@ nav {
 /* ── Ajustements spécifiques pour Mobile ── */
 @media (max-width: 440px) {
     nav {
-        height: 55px;
-        padding: 0 8px;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        height: 55px !important;
+        padding: 0 10px !important;
     }
 
     .logo {
-        height: 26px; /* Réduction subtile du logo sur petit écran */
+        height: 28px !important;
+        width: auto !important;
+        transform: none !important; /* Annule le décalage géant sur téléphone */
+    }
+
+    .nav-center {
+        transform: none !important; /* Annule le décalage vertical */
+        gap: 8px !important;
+    }
+
+    .nav-right {
+        transform: none !important; /* Annule le décalage vertical */
+        gap: 6px !important;
     }
 
     .nav-link {
-        font-size: 11px;
-        padding: 4px 6px;
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+    }
+
+    #theme-toggle {
+        height: 30px !important;
+        padding: 4px 6px !important;
     }
 
     body {
-        padding-top: 68px; /* Ajustement de la marge supérieure */
+        padding-top: 70px !important; /* Aligne la calculatrice juste sous la nav de 55px */
+        padding-bottom: 10px !important;
+    }
+
+    .container {
+        padding-top: 0 !important; /* Enlève les 102px de vide inutile sur téléphone */
+    }
+
+    h1 {
+        margin-bottom: 0.6rem !important;
     }
 
     /* Rend la grille de boutons de la calculatrice un peu plus compacte sur mobile */
     button {
-        padding: 10px 4px;
-        height: 42px;
-        font-size: 15px;
+        padding: 10px 4px !important;
+        height: 42px !important;
+        font-size: 15px !important;
     }
 
     .display {
-        padding: 10px 14px;
-        min-height: 85px;
-        margin-bottom: 10px;
+        padding: 10px 14px !important;
+        min-height: 85px !important;
+        margin-bottom: 10px !important;
     }
 
     #res {
-        font-size: 22px;
+        font-size: 22px !important;
+    }
+
+    #liste-historique {
+        max-height: 110px !important; /* Réduit légèrement la liste pour tout voir sur l'écran */
     }
 }
 
