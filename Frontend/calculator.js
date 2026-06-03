@@ -197,24 +197,38 @@ async function faireCalcul() {
     // Grab the logged-in User ID from localStorage
     const currentUserId = localStorage.getItem('currentUserId');
 
-    // Optional Safety Check: If they aren't logged in, don't let them calculate
-    if (!currentUserId) {
-        resEl.innerText = "Error: Please log in first";
-        resEl.classList.add("error-text");
-        return;
-    }
-
     resEl.classList.remove("error-text");
     resEl.innerText = "";
 
     const operators = ["+", "-", "*", "/", "^"];
     if (operators.includes(expr.slice(-1))) {
-        document.getElementById("res").innerText = "Error: Incomplete expression";
+        resEl.innerText = "Error: Incomplete expression";
         resEl.classList.add("error-text");
         statusEl.innerText = "";
         return;
     }
 
+    // ─── SI L'UTILISATEUR N'EST PAS CONNECTÉ ───
+    if (!currentUserId) {
+        try {
+            // Remplacer le symbole ^ par ** pour que JavaScript comprenne la puissance
+            let jsExpr = expr.replace(/\^/g, "**");
+            
+            // Calculer directement en JavaScript local
+            let localResult = eval(jsExpr);
+            
+            resEl.innerHTML = localResult;
+            statusEl.innerText = ""; // Pas d'historique à charger
+            return; // On arrête la fonction ici !
+        } catch (err) {
+            resEl.innerText = "Error";
+            resEl.classList.add("error-text");
+            statusEl.innerText = "";
+            return;
+        }
+    }
+
+    // ─── SI L'UTILISATEUR EST CONNECTÉ (Votre code API d'origine) ───
     try {
         const response = await fetch(`${API_URL}/calculer`, {
             method: "POST",
@@ -232,7 +246,7 @@ async function faireCalcul() {
         }
 
         statusEl.innerText = "";
-        chargerHistorique();
+        chargerHistorique(); // Met à jour l'historique de l'utilisateur
     } catch (err) {
         resEl.classList.add("error-text");
         statusEl.innerText = "";
