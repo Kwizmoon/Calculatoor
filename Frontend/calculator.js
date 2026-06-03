@@ -100,11 +100,10 @@ async function chargerClassement() {
 
     list.innerHTML = `<li class="lb-loading">Chargement…</li>`;
 
-    try {
+try {
         const res = await fetch(`${API_URL.replace('/calculator', '')}/api/leaderboard?limit=${LB_LIMIT}&page=${lbPage}&timespan=${lbTimespan}`);
         const data = await res.json();
 
-        const medals = ["🥇", "🥈", "🥉"];
         const offset = (lbPage - 1) * LB_LIMIT;
 
         if (!data.length) {
@@ -112,10 +111,10 @@ async function chargerClassement() {
         } else {
             list.innerHTML = data.map((entry, i) => {
                 const rank = offset + i + 1;
-                const medalOrRank = medals[rank - 1] ?? `#${rank}`;
+                const formattedRank = `#${rank}`; 
                 const isCurrentUser = entry.userId === parseInt(localStorage.getItem('currentUserId'));
                 return `<li class="${isCurrentUser ? 'lb-current-user' : ''}">
-                    <span class="lb-rank ${rank <= 3 ? 'top' + rank : ''}">${medalOrRank}</span>
+                    <span class="lb-rank ${rank <= 3 ? 'top' + rank : ''}">${formattedRank}</span>
                     <span class="lb-name">${entry.username}${isCurrentUser ? ' <span class="lb-you">(vous)</span>' : ''}</span>
                     <span class="lb-count">${entry.expressionCount} calc.</span>
                 </li>`;
