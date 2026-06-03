@@ -116,31 +116,6 @@ nav {
         padding: 4px 6px !important;
     }
 
-    body {
-        padding-top: 70px !important; /* Aligne la calculatrice juste sous la nav de 55px */
-        padding-bottom: 10px !important;
-    }
-
-    .container {
-        padding-top: 0 !important; /* Enlève les 102px de vide inutile sur téléphone */
-    }
-
-    h1 {
-        margin-bottom: 0.6rem !important;
-    }
-
-    /* Rend la grille de boutons de la calculatrice un peu plus compacte sur mobile */
-    button {
-        padding: 10px 4px !important;
-        height: 42px !important;
-        font-size: 15px !important;
-    }
-
-    .display {
-        padding: 10px 14px !important;
-        min-height: 85px !important;
-        margin-bottom: 10px !important;
-    }
 
     #res {
         font-size: 22px !important;
