@@ -63,7 +63,7 @@ function deconnexion() {
 
 function connexion() {
     // Redirect to login page or show login UI — adjust to your auth flow
-    window.location.href = "index.html";
+    window.location.href = "auth.html";
 }
 
 // ── Leaderboard ──
