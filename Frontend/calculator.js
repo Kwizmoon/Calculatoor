@@ -251,7 +251,7 @@ async function supprimerLog(id) {
     }
 
     try {
-        const response = await fetch(`${API_URL.replace('/calculator', '')}/api/historique/${id}`, {
+        const response = await fetch(`${API_URL}/historique/${id}`, {
             method: "DELETE"
         });
 
