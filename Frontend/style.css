@@ -21,45 +21,44 @@ nav.nav-minimal .logo {
     transform: none; /* Removes the negative translate if it looks off here */
 }
 
-/* ── Barre de Navigation Fluide & Responsive ── */
 nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%; 
     z-index: 1000;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 24px;
     box-sizing: border-box;
     background-color: var(--bg); 
     border-bottom: 1px solid var(--border);
-    height: 60px; /* Hauteur mince et fixe parfaite */
-}
-
-/* Conteneur pour isoler le logo proprement */
-.nav-left {
-    display: flex;
-    align-items: center;
+    height: 90px;
+    
 }
 
 .logo {
-    height: 32px; /* Taille idéale pour un en-tête moderne, fini les 200px ! */
+    height: 200px; 
     width: auto;
-    object-fit: contain;
+    object-fit: contain; /* Ensures the image doesn't distort */
+    transform: translateY(-50px) translateX(-20px);
 }
 
 .nav-center {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 4px;
+    justify-content: center;
+    transform: translateY(-40px);
 }
 
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 4px;
+    justify-content: flex-end;
+    transform: translateY(-40px);
 }
 
 /* ── Nav links ── */
@@ -89,7 +88,7 @@ nav {
     }
 
     .logo {
-        height: 100px; /* Réduction subtile du logo sur petit écran */
+        height: 26px; /* Réduction subtile du logo sur petit écran */
     }
 
     .nav-link {
@@ -187,15 +186,16 @@ body {
     font-family: var(--mono);
     min-height: 100vh;
     display: flex;
-    flex-direction: column; /* Permet un meilleur comportement du défilement */
     align-items: center;
-    justify-content: flex-start; /* Aligne vers le haut pour éviter le tassement au centre */
-    padding: 12px;
-    padding-top: 76px; /* 60px de nav + 16px d'espace de respiration */
+    justify-content: center;
+    padding: 2rem 1rem;
+    padding-top: 110px;
 }
 
+
+
 .container {
-    padding-top: 0; /* Plus besoin de compenser ici, le body s'en charge */
+    padding-top: 102px;
     width: 100%;
     max-width: 380px;
 }
