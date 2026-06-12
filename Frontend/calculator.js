@@ -116,7 +116,7 @@ try {
                 return `<li class="${isCurrentUser ? 'lb-current-user' : ''}">
                     <span class="lb-rank ${rank <= 3 ? 'top' + rank : ''}">${formattedRank}</span>
                     <span class="lb-name">${entry.username}${isCurrentUser ? ' <span class="lb-you">(vous)</span>' : ''}</span>
-                    <span class="lb-count">${entry.expressionCount} calc.</span>
+                    <span class="lb-count">${entry.expressionCount}</span>
                 </li>`;
             }).join("");
         }
