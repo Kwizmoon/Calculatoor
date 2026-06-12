@@ -1,4 +1,4 @@
-# Calculatrice Avancée WEB— TP2
+# Calculatoor
 
 **Cours :** 420-246-AH · Programmation Microsoft  
 **Professeur :** Steve Lévesque  
@@ -6,42 +6,31 @@
 
 ---
 
-URL du projet : https://calculator-web-sage-zeta.vercel.app/ 
-
-## Membres de l'équipe
-
-| Prénom            | Nom       | Matricule |
-|-------------------|-----------|-----------|
-| Nanou Ange Robert | Kouassi   | 2007471   |
-| Mohamed Sabry     | Banwan    | 2252825   |
-| Bao Tran          | Bach      | 1642345   |
-| Mohammed Amine    | Lemgandez | 2257191   |
-
----
-
 ## Description
 
-Extension du TP1 : l'application console C# est devenue une **API REST ASP.NET Core** connectée à un **frontend web**. L'interface permet de saisir des expressions mathématiques, d'obtenir un résultat en temps réel et de consulter l'historique des calculs. Le tout est déployé dans le cloud.
+Extension du TP2 : l'application console C# est devenue une **API REST ASP.NET Core** connectée à un **frontend web**. L'interface permet de s'authentifier, de saisir des expressions mathématiques, d'obtenir un résultat en temps réel, de consulter son historique personnel et de voir le classement des utilisateurs les plus actifs. Le tout est déployé dans le cloud.
 
 ---
 
 ## URLs de déploiement
 
-| Service  |                                     URL                                           |
-|----------|-----------------------------------------------------------------------------------|
-| Frontend | https://calculator-web-sage-zeta.vercel.app/                                      |← URL du site web
-| Backend  | https://calculatortp2-eca3egh7gffhdpfy.canadacentral-01.azurewebsites.net         |
-| Swagger  | https://calculatortp2-eca3egh7gffhdpfy.canadacentral-01.azurewebsites.net/swagger |← API avec requêtes HTTP
+| Service  | URL |
+|----------|-----|
+| Frontend | [https://calculator-web-sage-zeta.vercel.app/](https://calculatoor-mu.vercel.app/) |
+| Backend  | [https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net](https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/) |
+| Swagger  | [https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/swagger](https://calculatoor-hphjfqabfcbkc8gr.canadacentral-01.azurewebsites.net/swagger) |
 
 ---
 
 ## Architecture
 
 ```
-Navigateur (Vercel) |           | API REST (Azure)        |    | Base de données
-index.html          |           | CalculatorController.cs |    | EF Core In-Memory
-style.css           |  →HTTP→   | /calculator/calculer    | →  | CalculationLogs
-script.js           |           | /calculator/historique  |    |
+Navigateur (Vercel)  |           | API REST (Azure)         |    | Base de données
+index.html           |           | AuthController.cs        |    | EF Core
+auth.html            |  →HTTP→   | CalculatorController.cs  | →  | Users
+style.css            |           | LeaderboardController.cs |    | CalculationLogs
+calculator.js        |           |                          |    |
+auth.js              |           |                          |    |
 ```
 
 ---
@@ -51,18 +40,23 @@ script.js           |           | /calculator/historique  |    |
 ```
 TP2/
 ├── Frontend/                        ← Déployé sur Vercel
-│   ├── index.html                   ← Structure de la page
+│   ├── index.html                   ← Calculatrice + classement
+│   ├── auth.html                    ← Connexion / inscription
 │   ├── style.css                    ← Thème clair/sombre, mise en page
-│   ├── script.js                    ← Logique, appels API, historique
-│   ├── moon.png                     ← Icône thème
-│   └── sun-icon-30.png              ← Icône thème
+│   ├── calculator.js                ← Logique calculatrice, historique, classement
+│   ├── auth.js                      ← Logique authentification
+│   ├── moon.png                     ← Icône thème clair
+│   └── sun-icon-30.png              ← Icône thème sombre
 │
 └── Backend/                         ← Déployé sur Azure App Service
     ├── Program.cs                   ← Config, CORS, injection de dépendances
-    ├── CalculatorController.cs      ← Endpoints REST
+    ├── AuthController.cs            ← Inscription et connexion
+    ├── CalculatorController.cs      ← Calcul et historique
+    ├── LeaderboardController.cs     ← Classement et rang utilisateur
     └── CalculatriceLibrary/         ← Logique métier réutilisée du TP1
         ├── Calculator.cs            ← Évaluateur d'expressions
         ├── Models/
+        │   ├── User.cs
         │   └── CalculationLog.cs
         └── Data/
             └── AppDbContext.cs
@@ -72,77 +66,103 @@ TP2/
 
 ## Fonctionnalités
 
-| Fonctionnalité          |                            Détail                             |
-|-------------------------|---------------------------------------------------------------|
-| Opérations de base      | Addition, soustraction, multiplication, division              |
-| Exposant 2 (x²)         | Enveloppe l'expression courante : `(expr)^2`                  |
-| Exposant N (xⁿ)         | Ajoute `^` à l'expression pour saisir l'exposant              |
-| Racine carrée (√x)      | Enveloppe l'expression : `sqrt(expr)`                         |
-| Parenthèses             | Boutons `(` et `)` pour grouper les sous-expressions          |
-| Thème clair / sombre    | Bascule via un bouton en haut à droite                        |
-| Validation d'expression | Bloque l'envoi si l'expression se termine par un opérateur    |
-| Historique              | Chargé au démarrage, mis à jour après chaque calcul           |
-| Supprimer log           | Supprimer un log dans l'historique avec son id                |
-| Affichage d'erreurs     | Division par zéro et expressions invalides affichées en rouge |
+| Fonctionnalité           | Détail |
+|--------------------------|--------|
+| Inscription / Connexion  | Création de compte et authentification via l'API |
+| Session persistante      | `userId` et `username` stockés dans le `localStorage` |
+| Opérations de base       | Addition, soustraction, multiplication, division |
+| Exposant 2 (x²)          | Enveloppe l'expression courante : `(expr)^2` |
+| Exposant N (xⁿ)          | Ajoute `^` à l'expression pour saisir l'exposant |
+| Racine carrée (√x)       | Enveloppe l'expression : `sqrt(expr)` |
+| Parenthèses              | Boutons `(` et `)` pour grouper les sous-expressions |
+| Calcul local             | Utilisateur non connecté : calcul via `eval()` en JavaScript |
+| Calcul API               | Utilisateur connecté : calcul envoyé au backend et sauvegardé |
+| Historique personnel     | Chargé au démarrage, mis à jour après chaque calcul |
+| Suppression de log       | Suppression individuelle d'une entrée de l'historique |
+| Classement               | Top 10 des utilisateurs, filtrable par période |
+| Pagination               | Navigation page par page dans le classement |
+| Rang personnel           | Affichage du rang et du total de calculs de l'utilisateur connecté |
+| Thème clair / sombre     | Bascule persistante via `localStorage` |
+| Validation d'expression  | Bloque l'envoi si l'expression se termine par un opérateur |
+| Affichage d'erreurs      | Expressions invalides affichées en rouge |
 
 ---
 
 ## Endpoints de l'API
 
-| Méthode | Endpoint                      |                            Description                        |
-|---------|-------------------------------|---------------------------------------------------------------|
-| `POST`  | `/calculator/calculer`        | Évalue une expression mathématique et sauvegarde le résultat  |
-| `GET`   | `/calculator/historique`      | Retourne l'historique des calculs triés par ordre décroissant |
-| `DELETE`| `/calculator/historique/{id}` | Supprime un calcul spécifique de l'historique                 |
+### Auth — `/auth`
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/auth/register` | Créer un compte utilisateur |
+| `POST` | `/auth/login` | Connexion — retourne `userId` et `username` |
+
+### Calculator — `/calculator`
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/calculator/calculer` | Évalue une expression et sauvegarde le résultat |
+| `GET` | `/calculator/historique/{userId}` | Historique d'un utilisateur |
+| `DELETE` | `/calculator/historique/{id}` | Supprime une entrée de l'historique |
+
+### Leaderboard — `/api/leaderboard`
+
+| Méthode | Endpoint | Paramètres | Description |
+|---------|----------|------------|-------------|
+| `GET` | `/api/leaderboard` | `limit`, `page`, `timespan` | Classement paginé et filtrable |
+| `GET` | `/api/leaderboard/user/{userId}` | — | Rang et stats d'un utilisateur |
 
 ### Format des requêtes
 
+**POST `/auth/login`**
+```json
+// Corps
+{ "Username": "momo", "Password": "1234" }
+
+// Réponse
+{ "userId": 3, "username": "momo" }
+```
+
 **POST `/calculator/calculer`**
 ```json
-// Corps de la requête
-{ "expression": "2+3*4" }
+// Corps
+{ "Expression": "2+3*4", "UserId": 3 }
 
 // Réponse
 { "res": 14 }
 ```
 
-**GET `/calculator/historique`**
+**GET `/api/leaderboard?limit=10&page=1&timespan=alltime`**
 ```json
 [
-  {
-    "id": 1,
-    "expression": "2+3*4",
-    "result": "14",
-    "createdAt": "2025-01-01T12:00:00"
-  }
+  { "userId": 3, "username": "momo", "expressionCount": 42 }
 ]
+```
+
+**GET `/api/leaderboard/user/3`**
+```json
+{ "userId": 3, "rank": 1, "totalExpressions": 42 }
 ```
 
 ---
 
 ## Déploiement
 
-### Frontend — Vercel
+Frontend — Vercel
 
-1. Créer un compte sur [vercel.com](https://vercel.com) et lier le dépôt GitHub
-2. Importer le projet (les fichiers `index.html`, `style.css`, `script.js` + images)
-3. Vercel détecte automatiquement un projet statique — aucune configuration requise
-4. Cliquer sur **Deploy** — l'URL publique est générée automatiquement
+Backend — Azure App Service
 
-### Backend — Azure App Service
+## DataBase
 
-1. Dans Visual Studio : clic droit sur le projet API → **Publish**
-2. Choisir **Azure** → **Azure App Service (Windows)**
-3. Créer une nouvelle App Service (région Canada Central recommandée)
-4. Laisser les paramètres par défaut — EF Core In-Memory ne nécessite pas de base de données externe
-5. Cliquer sur **Publish** — Azure génère l'URL du service
-6. Copier l'URL dans la constante `API_URL` de `script.js` et redéployer sur Vercel
+PostgreSQL - Azure Database for PostgreSQL
+
+
 
 ### CORS
 
 Le backend autorise toutes les origines pour permettre les appels depuis Vercel :
 
-```C#
+```csharp
 app.UseCors(policy => policy
     .AllowAnyOrigin()
     .AllowAnyHeader()
@@ -156,7 +176,6 @@ app.UseCors(policy => policy
 ### Développement
 - Visual Studio 2022+
 - .NET 8.0 SDK
-- Compte GitHub (pour Vercel)
 
 ### Déploiement
 - Compte Vercel (gratuit)
